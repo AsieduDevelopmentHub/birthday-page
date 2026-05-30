@@ -350,7 +350,7 @@ main {
 }
 
 .dev-banner {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
@@ -362,6 +362,10 @@ main {
   color: #fcd34d;
   background: rgba(120, 53, 15, 0.35);
   border: 1px solid rgba(252, 211, 77, 0.25);
+}
+
+.dev-banner.is-active {
+  display: flex;
 }
 
 .dev-timer {

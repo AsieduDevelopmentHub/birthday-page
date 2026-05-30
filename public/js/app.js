@@ -89,12 +89,18 @@ function updateDevTimer() {
 
 function updateDevUi() {
   const active = isDevMode();
-  if (devBanner) devBanner.hidden = !active;
+  if (devBanner) {
+    devBanner.hidden = !active;
+    devBanner.classList.toggle("is-active", active);
+  }
   updateDevTimer();
 }
 
 async function initDevMode() {
-  if (!isDevUrl) return;
+  if (!isDevUrl) {
+    updateDevUi();
+    return;
+  }
 
   const session = getSession();
   if (session) {

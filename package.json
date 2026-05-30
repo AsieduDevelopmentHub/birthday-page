@@ -2,12 +2,16 @@
   "name": "birthday-wishes",
   "version": "1.0.0",
   "private": true,
-  "description": "Professional 3D birthday wish page",
+  "description": "Professional 3D birthday wish page for Yaw Safo Marfo",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
   },
   "dependencies": {
+    "@vercel/blob": "^0.27.3",
     "express": "^4.21.2"
   }
 }

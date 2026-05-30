@@ -34,20 +34,27 @@ Open http://localhost:3000
 |---------|--------|
 | **Framework Preset** | Other |
 | **Root Directory** | `./` (default) |
-| **Build Command** | *(leave empty)* |
+| **Build Command** | `npm run build` |
 | **Output Directory** | *(leave empty)* |
 | **Install Command** | `npm install` |
 | **Development Command** | `npm run dev` *(optional, for Vercel CLI)* |
 
 4. **Do not** set a Production **Start Command** — Vercel uses serverless functions, not `node server.js`.
 5. After deploy, open **Storage** → create a **Blob** store and connect it to the project. This sets `BLOB_READ_WRITE_TOKEN` so new wishes persist (without Blob, the site loads but posting wishes may fail in production).
-6. Optional: add environment variable **`SITE_URL`** = `https://your-project.vercel.app` (no trailing slash). Used only if you add a custom domain later for absolute share URLs.
-
-Redeploy after adding Blob storage.
+6. Add **`SITE_URL`** = `https://your-project.vercel.app` (no trailing slash) — production domain used for WhatsApp/link preview images. Vercel’s `VERCEL_URL` is used as a fallback during build if `SITE_URL` is not set.
+7. **Redeploy** after any env or Blob change.
 
 ## Share preview (WhatsApp, iMessage, Slack, etc.)
 
-Meta tags in `public/index.html` use Yaw’s photo for Open Graph / Twitter cards. Social apps resolve `/image/YawSafoMarfo.jpg` against your live URL after deploy.
+WhatsApp and Facebook **do not** load preview images from relative paths like `/image/...`. They require a full URL, e.g. `https://your-site.vercel.app/image/YawSafoMarfo.jpg`.
+
+The `npm run build` step replaces `__SITE_ORIGIN__` in `index.html` with your live domain on each Vercel deploy.
+
+**If the image still does not show after redeploy:**
+
+1. Open `https://your-domain.vercel.app/image/YawSafoMarfo.jpg` in a browser — it must load publicly.
+2. [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) → paste your site URL → **Scrape Again** (WhatsApp uses the same cache).
+3. Share the link again in WhatsApp (previews are cached for hours).
 
 ## Customize
 

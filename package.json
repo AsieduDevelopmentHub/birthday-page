@@ -7,6 +7,7 @@
     "node": ">=18"
   },
   "scripts": {
+    "build": "node scripts/inject-meta.js",
     "start": "node server.js",
     "dev": "node server.js"
   },

@@ -17,6 +17,24 @@ if (brandEl) brandEl.textContent = BRAND_NAME;
 document.title = `Happy Birthday · ${HONOREE_NAME}`;
 yearEl.textContent = new Date().getFullYear();
 
+function initAos() {
+  if (typeof AOS === "undefined") return;
+  AOS.init({
+    duration: 750,
+    easing: "ease-out-cubic",
+    once: true,
+    offset: 64,
+    mirror: false,
+    anchorPlacement: "top-bottom",
+  });
+}
+
+function refreshAos() {
+  if (typeof AOS !== "undefined") AOS.refresh();
+}
+
+initAos();
+
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString(undefined, {
     month: "short",
@@ -31,10 +49,15 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-function renderWish(wish, isNew = false) {
+function renderWish(wish, isNew = false, aosDelay = 0) {
   const li = document.createElement("li");
   li.className = `wish-card${isNew ? " is-new" : ""}`;
   li.dataset.id = wish.id;
+  if (!isNew) {
+    li.setAttribute("data-aos", "fade-up");
+    li.setAttribute("data-aos-delay", String(Math.min(aosDelay, 400)));
+    li.setAttribute("data-aos-offset", "40");
+  }
   li.innerHTML = `
     <div class="wish-meta">
       <strong>${escapeHtml(wish.name)}</strong>
@@ -68,10 +91,10 @@ async function loadWishes() {
     }
     emptyEl.hidden = true;
     wishes.forEach((wish, index) => {
-      const card = renderWish(wish);
-      card.style.animationDelay = `${index * 0.06}s`;
+      const card = renderWish(wish, false, index * 80);
       listEl.appendChild(card);
     });
+    refreshAos();
   } catch {
     setFeedback("Could not load wishes. Is the server running?", "error");
   }
@@ -103,6 +126,7 @@ form.addEventListener("submit", async (e) => {
     emptyEl.hidden = true;
     const card = renderWish(data, true);
     listEl.prepend(card);
+    refreshAos();
     form.reset();
     setFeedback("Wish posted — thank you!", "success");
   } catch (err) {

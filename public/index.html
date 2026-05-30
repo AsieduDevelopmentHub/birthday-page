@@ -17,12 +17,15 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="KANTINKA" />
+    <meta property="og:url" content="__SITE_ORIGIN__/" />
     <meta property="og:title" content="Happy Birthday · Yaw Safo Marfo" />
     <meta
       property="og:description"
       content="Celebrating Yaw Safo Marfo — senior developer, KANTINKA. Share a birthday wish."
     />
-    <meta property="og:image" content="/image/YawSafoMarfo.jpg" />
+    <meta property="og:image" content="__SITE_ORIGIN__/image/YawSafoMarfo.jpg" />
+    <meta property="og:image:secure_url" content="__SITE_ORIGIN__/image/YawSafoMarfo.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:alt" content="Yaw Safo Marfo" />
     <meta property="og:locale" content="en_US" />
 
@@ -32,8 +35,9 @@
       name="twitter:description"
       content="Celebrating Yaw Safo Marfo (KANTINKA). Leave a birthday wish."
     />
-    <meta name="twitter:image" content="/image/YawSafoMarfo.jpg" />
+    <meta name="twitter:image" content="__SITE_ORIGIN__/image/YawSafoMarfo.jpg" />
     <meta name="twitter:image:alt" content="Yaw Safo Marfo" />
+    <link rel="canonical" href="__SITE_ORIGIN__/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -41,13 +45,19 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   </head>
   <body>
     <canvas id="scene" aria-hidden="true"></canvas>
     <div class="grain" aria-hidden="true"></div>
 
     <header class="hero">
-      <div class="hero-portrait">
+      <div
+        class="hero-portrait"
+        data-aos="zoom-in"
+        data-aos-duration="900"
+        data-aos-easing="ease-out-cubic"
+      >
         <img
           src="/image/YawSafoMarfo.jpg"
           alt="Yaw Safo Marfo"
@@ -57,28 +67,61 @@
           decoding="async"
         />
       </div>
-      <p id="brand-name" class="brand-badge">KANTINKA</p>
-      <p class="eyebrow">Celebrating excellence</p>
-      <h1>
+      <p
+        id="brand-name"
+        class="brand-badge"
+        data-aos="fade-down"
+        data-aos-delay="120"
+      >
+        KANTINKA
+      </p>
+      <p class="eyebrow" data-aos="fade-up" data-aos-delay="200">Celebrating excellence</p>
+      <h1 data-aos="fade-up" data-aos-delay="280">
         Happy Birthday,
         <span id="honoree-name" class="honoree">Yaw Safo Marfo</span>
       </h1>
-      <p class="lead">
+      <p class="lead" data-aos="fade-up" data-aos-delay="360">
         To a senior developer who leads with craft and calm — may this year
         bring bold builds, steady growth, and wins worth celebrating.
       </p>
-      <a href="#wishes" class="cta">Leave a wish</a>
+      <a
+        href="#wishes"
+        class="cta"
+        data-aos="fade-up"
+        data-aos-delay="440"
+        data-aos-anchor-placement="top-bottom"
+      >
+        Leave a wish
+      </a>
     </header>
 
     <main>
-      <section id="wishes" class="panel wishes-panel">
-        <div class="panel-header">
+      <section
+        id="wishes"
+        class="panel wishes-panel"
+        data-aos="fade-up"
+        data-aos-duration="850"
+        data-aos-offset="80"
+      >
+        <div
+          class="panel-header"
+          data-aos="fade-right"
+          data-aos-delay="100"
+          data-aos-offset="100"
+        >
           <h2>Birthday wishes</h2>
           <p>Messages from the team — saved and shown live on this page.</p>
         </div>
 
-        <form id="wish-form" class="wish-form" novalidate>
-          <div class="field-row">
+        <form
+          id="wish-form"
+          class="wish-form"
+          novalidate
+          data-aos="fade-up"
+          data-aos-delay="180"
+          data-aos-offset="100"
+        >
+          <div class="field-row" data-aos="fade-up" data-aos-delay="220">
             <label for="wish-name">Your name</label>
             <input
               id="wish-name"
@@ -90,7 +133,7 @@
               required
             />
           </div>
-          <div class="field-row">
+          <div class="field-row" data-aos="fade-up" data-aos-delay="280">
             <label for="wish-message">Your message</label>
             <textarea
               id="wish-message"
@@ -101,19 +144,31 @@
               required
             ></textarea>
           </div>
-          <button type="submit" class="submit-btn">
+          <button
+            type="submit"
+            class="submit-btn"
+            data-aos="zoom-in"
+            data-aos-delay="340"
+          >
             <span class="btn-label">Post wish</span>
             <span class="btn-spinner" hidden></span>
           </button>
           <p id="form-feedback" class="form-feedback" role="status"></p>
         </form>
 
-        <ul id="wish-list" class="wish-list" aria-live="polite"></ul>
-        <p id="wish-empty" class="wish-empty" hidden>No wishes yet — be the first.</p>
+        <div
+          class="wishes-list-wrap"
+          data-aos="fade-up"
+          data-aos-delay="120"
+          data-aos-offset="60"
+        >
+          <ul id="wish-list" class="wish-list" aria-live="polite"></ul>
+          <p id="wish-empty" class="wish-empty" hidden>No wishes yet — be the first.</p>
+        </div>
       </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" data-aos="fade-up" data-aos-offset="40">
       <p>Crafted with appreciation · <span id="year"></span></p>
     </footer>
 
@@ -125,6 +180,7 @@
         }
       }
     </script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script type="module" src="/js/scene3d.js"></script>
     <script type="module" src="/js/app.js"></script>
   </body>

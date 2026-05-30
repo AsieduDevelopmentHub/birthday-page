@@ -66,7 +66,6 @@ main,
   margin: 0 auto;
   padding: clamp(3.5rem, 10vh, 6rem) 1.5rem 3rem;
   text-align: center;
-  animation: fade-up 1s ease 0.2s both;
 }
 
 .hero-portrait {
@@ -81,10 +80,10 @@ main,
     0 20px 50px rgba(0, 0, 0, 0.45),
     0 0 40px var(--accent-soft);
   transform-style: preserve-3d;
-  animation: portrait-float 6s ease-in-out infinite;
 }
 
 .hero-portrait img {
+  animation: portrait-float 6s ease-in-out infinite;
   display: block;
   width: 100%;
   height: 100%;
@@ -175,7 +174,10 @@ main {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
-  animation: fade-up 1s ease 0.45s both;
+}
+
+.wishes-list-wrap {
+  margin-top: 0.25rem;
 }
 
 .panel-header h2 {
@@ -289,12 +291,25 @@ main {
   border-radius: 12px;
   border: 1px solid var(--border);
   background: rgba(11, 15, 20, 0.45);
-  animation: card-in 0.5s ease both;
 }
 
 .wish-card.is-new {
   border-color: rgba(201, 165, 92, 0.35);
   box-shadow: 0 0 24px var(--accent-soft);
+  animation: card-in 0.5s ease both;
+}
+
+/* AOS — match site palette & timing */
+[data-aos] {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 .wish-meta {

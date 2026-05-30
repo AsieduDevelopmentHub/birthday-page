@@ -1,6 +1,10 @@
+require("dotenv").config({ path: ".env.local" });
+require("dotenv").config();
+
 const express = require("express");
 const path = require("path");
 const { handleWishes } = require("./lib/wishes-handler");
+const { handleAdmin } = require("./lib/admin-handler");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +16,8 @@ app.use(express.static(PUBLIC_DIR));
 app.get("/api/wishes", (req, res) => handleWishes(req, res));
 app.post("/api/wishes", (req, res) => handleWishes(req, res));
 app.delete("/api/wishes", (req, res) => handleWishes(req, res));
+app.get("/api/admin", (req, res) => handleAdmin(req, res));
+app.post("/api/admin", (req, res) => handleAdmin(req, res));
 
 app.get("*", (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));

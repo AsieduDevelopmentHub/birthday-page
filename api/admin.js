@@ -1,0 +1,9 @@
+const { handleAdmin } = require("../lib/admin-handler");
+
+module.exports = async (req, res) => {
+  if (req.method === "OPTIONS") {
+    res.setHeader("Allow", "GET, POST, OPTIONS");
+    return res.status(204).end();
+  }
+  return handleAdmin(req, res);
+};

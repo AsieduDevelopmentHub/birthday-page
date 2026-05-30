@@ -9,6 +9,7 @@ const listEl = document.getElementById("wish-list");
 const emptyEl = document.getElementById("wish-empty");
 const feedbackEl = document.getElementById("form-feedback");
 const devBanner = document.getElementById("dev-banner");
+const devTimer = document.getElementById("dev-timer");
 const devLogout = document.getElementById("dev-logout");
 const submitBtn = form.querySelector(".submit-btn");
 const btnLabel = submitBtn.querySelector(".btn-label");
@@ -16,36 +17,120 @@ const btnSpinner = submitBtn.querySelector(".btn-spinner");
 
 const isDevUrl = new URLSearchParams(window.location.search).has("dev");
 const ADMIN_KEY_STORAGE = "wishesAdminKey";
+const ADMIN_EXPIRY_STORAGE = "wishesAdminExpiry";
+const SESSION_MS = 30 * 60 * 1000;
 
-function getAdminKey() {
-  return sessionStorage.getItem(ADMIN_KEY_STORAGE);
+function getSession() {
+  const key = sessionStorage.getItem(ADMIN_KEY_STORAGE);
+  const expiry = Number(sessionStorage.getItem(ADMIN_EXPIRY_STORAGE));
+  if (!key || !expiry) return null;
+  if (Date.now() >= expiry) {
+    clearAdminSession(false);
+    return null;
+  }
+  return { key, expiry };
 }
 
 function isDevMode() {
-  return isDevUrl && Boolean(getAdminKey());
+  return isDevUrl && getSession() !== null;
 }
 
-function promptAdminKey() {
-  if (!isDevUrl) return;
-  const key = window.prompt("Enter admin key to manage wishes:");
-  if (key) sessionStorage.setItem(ADMIN_KEY_STORAGE, key.trim());
-  updateDevUi();
+function getAdminKey() {
+  return getSession()?.key ?? null;
 }
 
-function clearAdminKey() {
+function setSession(key) {
+  sessionStorage.setItem(ADMIN_KEY_STORAGE, key);
+  sessionStorage.setItem(ADMIN_EXPIRY_STORAGE, String(Date.now() + SESSION_MS));
+}
+
+function clearAdminSession(reloadCards = true) {
   sessionStorage.removeItem(ADMIN_KEY_STORAGE);
+  sessionStorage.removeItem(ADMIN_EXPIRY_STORAGE);
   updateDevUi();
-  loadWishes();
+  if (reloadCards) loadWishes();
+}
+
+async function verifyAdminKey(key) {
+  const res = await fetch("/api/admin", {
+    method: "POST",
+    headers: { "X-Admin-Key": key },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Invalid admin key.");
+  }
+  return data;
+}
+
+async function promptAndValidateAdminKey() {
+  const key = window.prompt("Enter admin key to manage wishes:");
+  if (!key?.trim()) return false;
+  try {
+    await verifyAdminKey(key.trim());
+    setSession(key.trim());
+    return true;
+  } catch (err) {
+    window.alert(err.message || "Invalid admin key.");
+    return false;
+  }
+}
+
+function updateDevTimer() {
+  if (!devTimer) return;
+  const session = getSession();
+  if (!session) {
+    devTimer.textContent = "—";
+    return;
+  }
+  const mins = Math.max(1, Math.ceil((session.expiry - Date.now()) / 60000));
+  devTimer.textContent = `${mins} min`;
 }
 
 function updateDevUi() {
-  if (devBanner) devBanner.hidden = !isDevMode();
+  const active = isDevMode();
+  if (devBanner) devBanner.hidden = !active;
+  updateDevTimer();
 }
 
-if (isDevUrl && !getAdminKey()) promptAdminKey();
-else updateDevUi();
+async function initDevMode() {
+  if (!isDevUrl) return;
 
-devLogout?.addEventListener("click", clearAdminKey);
+  const session = getSession();
+  if (session) {
+    try {
+      await verifyAdminKey(session.key);
+      setSession(session.key);
+    } catch {
+      clearAdminSession(false);
+      window.alert("Session expired or admin key changed. Sign in again.");
+    }
+  }
+
+  if (!getSession()) {
+    const ok = await promptAndValidateAdminKey();
+    if (!ok) return;
+  }
+
+  updateDevUi();
+}
+
+devLogout?.addEventListener("click", () => {
+  clearAdminSession();
+  setFeedback("Signed out of dev mode.", "success");
+});
+
+setInterval(() => {
+  if (!isDevUrl) return;
+  const hadSession = sessionStorage.getItem(ADMIN_KEY_STORAGE);
+  if (hadSession && !getSession()) {
+    updateDevUi();
+    loadWishes();
+    setFeedback("Dev session expired. Sign in again with ?dev=1", "error");
+  } else if (isDevMode()) {
+    updateDevTimer();
+  }
+}, 15000);
 
 honoreeEl.textContent = HONOREE_NAME;
 if (brandEl) brandEl.textContent = BRAND_NAME;
@@ -121,7 +206,13 @@ async function deleteWish(id) {
       headers: { "X-Admin-Key": key },
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || "Delete failed");
+    if (!res.ok) {
+      if (res.status === 401) {
+        clearAdminSession();
+        window.alert("Invalid or expired admin session. Please sign in again.");
+      }
+      throw new Error(data.error || "Delete failed");
+    }
 
     const card = listEl.querySelector(`[data-id="${CSS.escape(id)}"]`);
     card?.remove();
@@ -216,4 +307,4 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-loadWishes();
+initDevMode().finally(() => loadWishes());

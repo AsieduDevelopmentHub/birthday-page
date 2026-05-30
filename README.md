@@ -58,9 +58,13 @@ The `npm run build` step replaces `__SITE_ORIGIN__` in `index.html` with your li
 
 ## Delete wishes (dev)
 
-Set an environment variable **`WISHES_ADMIN_KEY`** to any long secret (Vercel → Settings → Environment Variables, then redeploy).
+Set **`WISHES_ADMIN_KEY`** (Vercel → Settings → Environment Variables, then redeploy). Locally, put the same value in **`.env.local`**:
 
-**On the site:** open `https://your-site.vercel.app/?dev=1`, enter the admin key, then use **×** on any wish card. Updates Blob storage immediately.
+```
+WISHES_ADMIN_KEY=your-long-secret
+```
+
+**On the site:** open `https://your-site.vercel.app/?dev=1` — the key is checked with the server **before** dev mode turns on. Wrong keys are rejected immediately. Session lasts **30 minutes**, then expires. Use **Sign out** to end early. Updates Blob on delete.
 
 **From terminal:**
 

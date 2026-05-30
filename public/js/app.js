@@ -148,7 +148,7 @@ function initAos() {
   AOS.init({
     duration: 750,
     easing: "ease-out-cubic",
-    once: true,
+    once: false,
     offset: 64,
     mirror: false,
     anchorPlacement: "top-bottom",

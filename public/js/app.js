@@ -8,9 +8,44 @@ const form = document.getElementById("wish-form");
 const listEl = document.getElementById("wish-list");
 const emptyEl = document.getElementById("wish-empty");
 const feedbackEl = document.getElementById("form-feedback");
+const devBanner = document.getElementById("dev-banner");
+const devLogout = document.getElementById("dev-logout");
 const submitBtn = form.querySelector(".submit-btn");
 const btnLabel = submitBtn.querySelector(".btn-label");
 const btnSpinner = submitBtn.querySelector(".btn-spinner");
+
+const isDevUrl = new URLSearchParams(window.location.search).has("dev");
+const ADMIN_KEY_STORAGE = "wishesAdminKey";
+
+function getAdminKey() {
+  return sessionStorage.getItem(ADMIN_KEY_STORAGE);
+}
+
+function isDevMode() {
+  return isDevUrl && Boolean(getAdminKey());
+}
+
+function promptAdminKey() {
+  if (!isDevUrl) return;
+  const key = window.prompt("Enter admin key to manage wishes:");
+  if (key) sessionStorage.setItem(ADMIN_KEY_STORAGE, key.trim());
+  updateDevUi();
+}
+
+function clearAdminKey() {
+  sessionStorage.removeItem(ADMIN_KEY_STORAGE);
+  updateDevUi();
+  loadWishes();
+}
+
+function updateDevUi() {
+  if (devBanner) devBanner.hidden = !isDevMode();
+}
+
+if (isDevUrl && !getAdminKey()) promptAdminKey();
+else updateDevUi();
+
+devLogout?.addEventListener("click", clearAdminKey);
 
 honoreeEl.textContent = HONOREE_NAME;
 if (brandEl) brandEl.textContent = BRAND_NAME;
@@ -58,15 +93,50 @@ function renderWish(wish, isNew = false, aosDelay = 0) {
     li.setAttribute("data-aos-delay", String(Math.min(aosDelay, 400)));
     li.setAttribute("data-aos-offset", "40");
   }
+  const deleteBtn = isDevMode()
+    ? `<button type="button" class="wish-delete" data-id="${escapeHtml(wish.id)}" aria-label="Delete wish" title="Delete wish">×</button>`
+    : "";
   li.innerHTML = `
     <div class="wish-meta">
-      <strong>${escapeHtml(wish.name)}</strong>
-      <time datetime="${wish.createdAt}">${formatDate(wish.createdAt)}</time>
+      <div class="wish-meta-start">
+        <strong>${escapeHtml(wish.name)}</strong>
+        <time datetime="${wish.createdAt}">${formatDate(wish.createdAt)}</time>
+      </div>
+      ${deleteBtn}
     </div>
     <p>${escapeHtml(wish.message)}</p>
   `;
   return li;
 }
+
+async function deleteWish(id) {
+  const key = getAdminKey();
+  if (!key) return;
+
+  if (!window.confirm("Delete this wish?")) return;
+
+  try {
+    const res = await fetch(`/api/wishes?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      headers: { "X-Admin-Key": key },
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Delete failed");
+
+    const card = listEl.querySelector(`[data-id="${CSS.escape(id)}"]`);
+    card?.remove();
+    if (!listEl.children.length) emptyEl.hidden = false;
+    setFeedback("Wish deleted.", "success");
+  } catch (err) {
+    setFeedback(err.message || "Could not delete wish.", "error");
+  }
+}
+
+listEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".wish-delete");
+  if (!btn) return;
+  deleteWish(btn.dataset.id);
+});
 
 function setLoading(loading) {
   submitBtn.disabled = loading;
@@ -125,6 +195,16 @@ form.addEventListener("submit", async (e) => {
 
     emptyEl.hidden = true;
     const card = renderWish(data, true);
+    if (isDevMode()) {
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "wish-delete";
+      del.dataset.id = data.id;
+      del.setAttribute("aria-label", "Delete wish");
+      del.title = "Delete wish";
+      del.textContent = "×";
+      card.querySelector(".wish-meta")?.appendChild(del);
+    }
     listEl.prepend(card);
     refreshAos();
     form.reset();

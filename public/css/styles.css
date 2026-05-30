@@ -314,10 +314,61 @@ main {
 
 .wish-meta {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
   margin-bottom: 0.45rem;
+}
+
+.wish-meta-start {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.wish-delete {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid rgba(252, 165, 165, 0.35);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--error);
+  background: rgba(127, 29, 29, 0.25);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.wish-delete:hover {
+  background: rgba(127, 29, 29, 0.45);
+  border-color: var(--error);
+}
+
+.dev-banner {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  color: #fcd34d;
+  background: rgba(120, 53, 15, 0.35);
+  border: 1px solid rgba(252, 211, 77, 0.25);
+}
+
+.dev-logout {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.75rem;
+  color: inherit;
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 }
 
 .wish-meta strong {

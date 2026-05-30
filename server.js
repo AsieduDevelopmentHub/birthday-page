@@ -11,6 +11,7 @@ app.use(express.static(PUBLIC_DIR));
 
 app.get("/api/wishes", (req, res) => handleWishes(req, res));
 app.post("/api/wishes", (req, res) => handleWishes(req, res));
+app.delete("/api/wishes", (req, res) => handleWishes(req, res));
 
 app.get("*", (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));

@@ -56,6 +56,21 @@ The `npm run build` step replaces `__SITE_ORIGIN__` in `index.html` with your li
 2. [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) → paste your site URL → **Scrape Again** (WhatsApp uses the same cache).
 3. Share the link again in WhatsApp (previews are cached for hours).
 
+## Delete wishes (dev)
+
+Set an environment variable **`WISHES_ADMIN_KEY`** to any long secret (Vercel → Settings → Environment Variables, then redeploy).
+
+**On the site:** open `https://your-site.vercel.app/?dev=1`, enter the admin key, then use **×** on any wish card. Updates Blob storage immediately.
+
+**From terminal:**
+
+```bash
+curl -X DELETE "https://your-site.vercel.app/api/wishes?id=WISH_ID_HERE" \
+  -H "X-Admin-Key: YOUR_SECRET"
+```
+
+**In Vercel dashboard:** Storage → `birthday-page-blob` → open `wishes.json` → delete the file to reset all wishes (next visit re-seeds from repo `wishes.json`).
+
 ## Customize
 
 - **Name / brand** — `public/js/app.js` (`HONOREE_NAME`, `BRAND_NAME`)

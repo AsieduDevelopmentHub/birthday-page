@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday · Yaw Safo Marfo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <canvas id="scene" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="hero">
+      <div class="hero-portrait">
+        <img
+          src="/image/YawSafoMarfo.jpg"
+          alt="Yaw Safo Marfo"
+          width="168"
+          height="168"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <p id="brand-name" class="brand-badge">KANTINKA</p>
+      <p class="eyebrow">Celebrating excellence</p>
+      <h1>
+        Happy Birthday,
+        <span id="honoree-name" class="honoree">Yaw Safo Marfo</span>
+      </h1>
+      <p class="lead">
+        To a senior developer who leads with craft and calm — may this year
+        bring bold builds, steady growth, and wins worth celebrating.
+      </p>
+      <a href="#wishes" class="cta">Leave a wish</a>
+    </header>
+
+    <main>
+      <section id="wishes" class="panel wishes-panel">
+        <div class="panel-header">
+          <h2>Birthday wishes</h2>
+          <p>Messages from the team — saved and shown live on this page.</p>
+        </div>
+
+        <form id="wish-form" class="wish-form" novalidate>
+          <div class="field-row">
+            <label for="wish-name">Your name</label>
+            <input
+              id="wish-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              maxlength="60"
+              placeholder="Alex Chen"
+              required
+            />
+          </div>
+          <div class="field-row">
+            <label for="wish-message">Your message</label>
+            <textarea
+              id="wish-message"
+              name="message"
+              rows="3"
+              maxlength="400"
+              placeholder="Share a thoughtful birthday note..."
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <span class="btn-label">Post wish</span>
+            <span class="btn-spinner" hidden></span>
+          </button>
+          <p id="form-feedback" class="form-feedback" role="status"></p>
+        </form>
+
+        <ul id="wish-list" class="wish-list" aria-live="polite"></ul>
+        <p id="wish-empty" class="wish-empty" hidden>No wishes yet — be the first.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Crafted with appreciation · <span id="year"></span></p>
+    </footer>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="/js/scene3d.js"></script>
+    <script type="module" src="/js/app.js"></script>
+  </body>
+</html>
